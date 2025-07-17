@@ -5,7 +5,7 @@ const data = require('../db/data/test-data/index');
 beforeAll(() => seed(data));
 afterAll(() => db.end());
 
-describe('seed', () => {
+describe.only('seed', () => {
   describe('topics table', () => {
     test('topics table exists', () => {
       return db
