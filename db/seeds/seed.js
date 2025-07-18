@@ -80,11 +80,10 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     );
     return db.query(queryString)
   })
-  .catch((err) => {
+.catch((err) => {
   console.error('Error seeding database:', err);
 });
 }
-
 function createTopics() {
   const query = 
   `CREATE TABLE topics(
