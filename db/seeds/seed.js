@@ -1,6 +1,8 @@
 const db = require("../connection")
 const format = require('pg-format');
-const { convertTimestampToDate } = require('./utils');
+const { convertTimestampToDate } = require('./utils'); 
+const { createLookupRef } = require('./utils')
+
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db.query(`DROP TABLE IF EXISTS comments`)
@@ -58,18 +60,17 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     const queryString = format(
       `INSERT INTO
        articles (title, topic, author, body, created_at, votes, article_img_url)
-       VALUES %L`,
+       VALUES %L
+       RETURNING *`,
        formattedArticles
     );
-    return db.query(queryString)
-  })
-  .then(() => {
+     return db.query(queryString)
+})
+  .then(({rows: articles}) => {
+    const ref = createLookupRef(articles, "title", "article_id")
     const transformedCommentData = commentData.map(convertTimestampToDate);
-     const formattedComments = transformedCommentData.map((comment) => {
-        const matchingArticle = articleData.find(
-      (article) => article.title === comment.article_title
-    );
-    return [matchingArticle.article_id, comment.body, comment.votes, comment.author, comment.created_at];
+    const formattedComments = transformedCommentData.map((comments) => {
+      return [ref[comments.article_title], comments.body, comments.votes, comments.author, comments.created_at]
   });
     const queryString = format(
       `INSERT INTO
@@ -79,6 +80,9 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     );
     return db.query(queryString)
   })
+  .catch((err) => {
+  console.error('Error seeding database:', err);
+});
 }
 
 function createTopics() {

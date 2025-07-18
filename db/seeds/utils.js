@@ -5,3 +5,11 @@ exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   return { created_at: new Date(created_at), ...otherProperties };
 };
 
+exports.createLookupRef = (data, currentKey, targetKey) => {
+  const ref = {};
+  data.forEach((datum) => {
+    const currentValue = datum[currentKey];
+    ref[currentValue] = datum[targetKey]
+  })
+  return ref;
+}

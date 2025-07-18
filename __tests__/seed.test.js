@@ -363,7 +363,7 @@ describe.only('seed', () => {
     });
   });
 
-  describe('comments table', () => {
+  describe.only('comments table', () => {
     test('comments table exists', () => {
       return db
         .query(
