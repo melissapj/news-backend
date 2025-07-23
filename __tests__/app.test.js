@@ -30,7 +30,8 @@ describe("GET /api/topics", () => {
     .get("/api/topics")
     .expect(200)
     .then(({body}) => {
-      expect(body.length).toBe(3)
+      const topics = body.topics
+      expect(topics.length).toBe(3)
     })
   })
   test("each topic is an object", () => {
@@ -38,18 +39,59 @@ describe("GET /api/topics", () => {
     .get("/api/topics")
     .expect(200)
     .then(({body}) => {
-      const topic = body[0]
+      const topics = body.topics
+      const topic = topics[0]
       expect(typeof topic).toBe("object")
     })
   })
-  test ("each topic has the correct properties", () => {
+  test("each topic has the correct properties", () => {
     return request(app)
     .get("/api/topics")
     .expect(200)
     .then(({body}) => {
-      const topic = body[0]
-      expect(topic).toHaveProperty("slug")
+      const topics = body.topics
+      const topic = topics[0]
+      expect(topic).toHaveProperty("slug");
       expect(topic).toHaveProperty("description")
+    })
   })
 })
+
+describe("GET /api/articles", () => {
+  test("gets all articles", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles
+      expect(articles.length).toBe(13)
+    })
+  })
+  test("each article is an object", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles
+      const article = articles[0]
+      expect(typeof article).toBe("object")
+    })
+  })
+  test("each article has the correct properties", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+      const articles = body.articles
+      const article = articles[0]
+      expect(article).toHaveProperty("author")
+      expect(article).toHaveProperty("title")
+      expect(article).toHaveProperty("article_id")
+      expect(article).toHaveProperty("topic")
+      expect(article).toHaveProperty("created_at")
+      expect(article).toHaveProperty("votes")
+      expect(article).toHaveProperty("article_img_url")
+      expect(article).toHaveProperty("comment_count")
+    })
+  })
 })
