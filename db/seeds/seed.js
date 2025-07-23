@@ -130,7 +130,4 @@ function createComments() {
     return db.query(query)
 }
 
-
-
-
 module.exports = seed;
