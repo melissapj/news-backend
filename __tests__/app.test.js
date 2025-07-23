@@ -95,3 +95,36 @@ describe("GET /api/articles", () => {
     })
   })
 })
+describe("GET /api/users", () => {
+  test("gets all users", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({body}) => {
+      const users = body.users
+      expect(users.length).toBe(4)
+    })
+  })
+  test("each uers is an object", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({body}) => {
+      const users = body.users
+      const user = users[0]
+      expect(typeof user).toBe("object")
+    })
+  })
+  test("each user has the correct properties", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({body}) => {
+      const users = body.users
+      const user = users[0]
+      expect(user).toHaveProperty("username")
+      expect(user).toHaveProperty("name")
+      expect(user).toHaveProperty("avatar_url")
+    })
+  })
+})

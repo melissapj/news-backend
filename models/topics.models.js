@@ -1,7 +1,7 @@
 const db = require('../db/connection')
 
 const fetchTopics = () => {
-    return db.query(`SELECT * FROM topics`)
+    return db.query(`SELECT slug, description FROM topics`)
     .then(({rows: topics}) => {
         return topics
     })
