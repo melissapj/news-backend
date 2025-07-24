@@ -217,7 +217,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       })
     })
   })
-  test("400: responds with an error message whe na request is made for an article_id of the wrong data type", () => {
+  test("400: responds with an error message when a request is made for an article_id of the wrong data type", () => {
     return request(app)
     .get("/api/articles/wrong-data-type/comments")
     .expect(400)
@@ -231,6 +231,69 @@ describe("GET /api/articles/:article_id/comments", () => {
     .expect(404)
     .then(({body}) => {
       expect(body.msg).toBe("Not Found")
+    })
+  })
+})
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("checks the posted comment is an object", () => {
+    const data = {
+      username: "butter_bridge",
+      body: "this is a test body"
+    }
+  return request(app)
+    .post("/api/articles/2/comments")
+    .send(data)
+    .expect(200)
+    .then(({body}) => {
+      const comment = body[0]
+      expect(typeof comment).toBe("object")
+    })
+  })
+  test("checks the posted comment has correct properties", () => {
+    const data = {
+      username: "butter_bridge",
+      body: "this is a test body"
+    }
+  return request(app)
+    .post("/api/articles/2/comments")
+    .send(data)
+    .expect(200)
+    .then(({body}) => {
+      const comment = body[0]
+      expect(typeof comment.comment_id).toBe("number")
+      expect(typeof comment.article_id).toBe("number")
+      expect(typeof comment.body).toBe("string")
+      expect(typeof comment.votes).toBe("number")
+      expect(typeof comment.author).toBe("string")
+      expect(typeof comment.created_at).toBe("string")
+    })
+  })
+  test("checks the total number of comments had gone up by 1", async () => {
+    const data = {
+      username: "butter_bridge",
+      body: "this is a test body"
+    }
+
+     const { rows: beforeRows } = await db.query(`SELECT * FROM comments;`);
+     const beforeCount = beforeRows.length
+
+     await request(app)
+      .post("/api/articles/2/comments")
+      .send(data)
+      .expect(200)
+
+     const { rows: AfterRows } = await db.query(`SELECT * FROM comments;`);
+     const AfterCount = AfterRows.length
+
+     expect(AfterCount - beforeCount).toBe(1)
+  })
+  test("400: responds with an error message when a request is made for an article_id of the wrong data type", () => {
+    return request(app)
+    .get("/api/articles/wrong-data-type/comments")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request")
     })
   })
 })

@@ -1,4 +1,3 @@
-const fetchArticlesById  = require('../models/articlesById.models');
 const fetchCommentsByArticleId = require('../models/commentsByArticleId.model');
 
 const getArticlesById = (req, res, next) => {
