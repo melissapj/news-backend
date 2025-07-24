@@ -13,6 +13,17 @@ afterAll(() => {
   return db.end()
 })
 
+describe("*", () => {
+  test("ALL METHODS: responds with a 404 not found message when a request is made to an endpoint with doesn\'t exist on the api", () => {
+    return request(app)
+    .get("/not-an-endpoint")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Path Not Found")
+    })
+  })
+})
+
 describe("GET /api", () => {
   test.skip("200: Responds with an object detailing the documentation for each endpoint", () => {
     return request(app)
@@ -152,6 +163,22 @@ describe("GET /api/articles/:article_id", () => {
       expect(article.created_at).toBe("2020-10-16T05:03:00.000Z")
       expect(article.votes).toBe(0)
       expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+    })
+  })
+  test("400: responds with an error message whe na request is made for an article_id of the wrong data type", () => {
+    return request(app)
+    .get("/api/articles/wrong-data-type")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request")
+    })
+  })
+  test("404: responds with an error message when a request is made for a snack_id that is valid but not present in the database", () => {
+    return request(app)
+    .get("/api/articles/9999")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
     })
   })
 
