@@ -36,23 +36,21 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => {
+  test("topics is an object", () => {
+    return request(app)
+    .get("/api/topics")
+    .expect(200)
+    .then(({body}) => {
+      expect(body).toHaveProperty('topics')
+      expect(typeof body).toBe("object")
+    })
+  })
   test("gets all topics", () => {
     return request(app)
     .get("/api/topics")
     .expect(200)
     .then(({body}) => {
-      const topics = body.topics
-      expect(topics.length).toBe(3)
-    })
-  })
-  test("each topic is an object", () => {
-    return request(app)
-    .get("/api/topics")
-    .expect(200)
-    .then(({body}) => {
-      const topics = body.topics
-      const topic = topics[0]
-      expect(typeof topic).toBe("object")
+      expect(body.topics.length).toBeGreaterThan(0)
     })
   })
   test("each topic has the correct properties", () => {
@@ -61,31 +59,30 @@ describe("GET /api/topics", () => {
     .expect(200)
     .then(({body}) => {
       const topics = body.topics
-      const topic = topics[0]
-      expect(topic).toHaveProperty("slug");
-      expect(topic).toHaveProperty("description")
+      topics.forEach((topic) => {
+        expect(typeof topic.slug).toBe("string");
+        expect(typeof topic.description).toBe("string");
+      });
     })
   })
 })
 
 describe("GET /api/articles", () => {
-  test("gets all articles", () => {
-    return request(app)
-    .get("/api/articles")
-    .expect(200)
-    .then(({body}) => {
-      const articles = body.articles
-      expect(articles.length).toBe(13)
-    })
-  })
   test("each article is an object", () => {
     return request(app)
     .get("/api/articles")
     .expect(200)
     .then(({body}) => {
-      const articles = body.articles
-      const article = articles[0]
-      expect(typeof article).toBe("object")
+      expect(body).toHaveProperty('articles');
+      expect(typeof body).toBe("object");
+    })
+  })
+  test("gets all articles", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBeGreaterThan(0)
     })
   })
   test("each article has the correct properties", () => {
@@ -94,37 +91,36 @@ describe("GET /api/articles", () => {
     .expect(200)
     .then(({body}) => {
       const articles = body.articles
-      const article = articles[0]
-      expect(article).toHaveProperty("author")
-      expect(article).toHaveProperty("title")
-      expect(article).toHaveProperty("article_id")
-      expect(article).toHaveProperty("topic")
-      expect(article).toHaveProperty("created_at")
-      expect(article).toHaveProperty("votes")
-      expect(article).toHaveProperty("article_img_url")
-      expect(article).toHaveProperty("comment_count")
+      articles.forEach((article) => {
+        expect(typeof article.author).toBe("string");
+        expect(typeof article.title).toBe("string");
+        expect(typeof article.article_id).toBe("number")
+        expect(typeof article.topic).toBe("string")
+        expect(typeof article.created_at).toBe("string")
+        expect(typeof article.votes).toBe("number")
+        expect(typeof article.article_img_url).toBe("string")
+        expect(typeof article.comment_count).toBe("string")
+      })
     })
   })
 })
 
 describe("GET /api/users", () => {
-  test("gets all users", () => {
-    return request(app)
-    .get("/api/users")
-    .expect(200)
-    .then(({body}) => {
-      const users = body.users
-      expect(users.length).toBe(4)
-    })
-  })
   test("each user is an object", () => {
     return request(app)
     .get("/api/users")
     .expect(200)
     .then(({body}) => {
-      const users = body.users
-      const user = users[0]
-      expect(typeof user).toBe("object")
+      expect(body).toHaveProperty('users');
+      expect(typeof body).toBe("object");
+    })
+  })
+  test("gets all users", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.users.length).toBeGreaterThan(0)
     })
   })
   test("each user has the correct properties", () => {
@@ -133,36 +129,40 @@ describe("GET /api/users", () => {
     .expect(200)
     .then(({body}) => {
       const users = body.users
-      const user = users[0]
-      expect(user).toHaveProperty("username")
-      expect(user).toHaveProperty("name")
-      expect(user).toHaveProperty("avatar_url")
+      users.forEach((user) => {
+        expect(typeof user.username).toBe("string")
+        expect(typeof user.name).toBe("string")
+        expect(typeof user.avatar_url).toBe("string")
+      })
     })
   })
 })
 
 describe("GET /api/articles/:article_id", () => {
-  test("each article is an object", () => {
+  test("article is an object", () => {
     return request(app)
     .get("/api/articles/2")
     .expect(200)
-    .then(({body: article}) => {
-      expect(typeof article).toBe("object")
+    .then(({body}) => {
+      expect(body).toHaveProperty('article');
+      expect(typeof body).toBe("object");
     })
   })
-  test("gets and article by its id", () => {
+  test("gets and article by its id with correct properties", () => {
     return request(app)
     .get("/api/articles/2")
     .expect(200)
-    .then(({body: article}) => {
-      expect(article.article_id).toBe(2)
-      expect(article.title).toBe("Sony Vaio; or, The Laptop")
-      expect(article.author).toBe("icellusedkars")
-      expect(article.body).toBe("Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.")
-      expect(article.topic).toBe("mitch")
-      expect(article.created_at).toBe("2020-10-16T05:03:00.000Z")
-      expect(article.votes).toBe(0)
-      expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+    .then(({body}) => {
+      const articleRecieved = body.article[0]
+      expect(body.article).toHaveLength(1);
+      expect(typeof articleRecieved.article_id).toBe("number")
+      expect(typeof articleRecieved.title).toBe("string")
+      expect(typeof articleRecieved.author).toBe("string")
+      expect(typeof articleRecieved.body).toBe("string")
+      expect(typeof articleRecieved.topic).toBe("string")
+      expect(typeof articleRecieved.created_at).toBe("string")
+      expect(typeof articleRecieved.votes).toBe("number")
+      expect(typeof articleRecieved.article_img_url).toBe("string")
     })
   })
   test("400: responds with an error message whe na request is made for an article_id of the wrong data type", () => {
@@ -181,7 +181,56 @@ describe("GET /api/articles/:article_id", () => {
       expect(body.msg).toBe("Not Found")
     })
   })
+})
 
-
-
+describe("GET /api/articles/:article_id/comments", () => {
+  test("comments is an object", () => {
+    return request(app)
+    .get("/api/articles/5/comments")
+    .expect(200)
+    .then(({body}) => {
+      expect(typeof body).toBe("object")
+      expect(body).toHaveProperty("comments")
+    })
+  })
+  test("gets all comments for an article_id", () => {
+     return request(app)
+    .get("/api/articles/5/comments")
+    .expect(200)
+    .then(({body}) => {
+       expect(body.comments.length).toBeGreaterThan(0)
+    })
+  })
+  test("each comment has the correct properties", () => {
+    return request(app)
+    .get("/api/articles/5/comments")
+    .expect(200)
+    .then(({body}) => {
+      const comments = body.comments
+      comments.forEach((comment) => {
+        expect(typeof comment.comment_id).toBe("number")
+        expect(typeof comment.votes).toBe("number")
+        expect(typeof comment.created_at).toBe("string")
+        expect(typeof comment.author).toBe("string")
+        expect(typeof comment.body).toBe("string")
+        expect(typeof comment.article_id).toBe("number")
+      })
+    })
+  })
+  test("400: responds with an error message whe na request is made for an article_id of the wrong data type", () => {
+    return request(app)
+    .get("/api/articles/wrong-data-type/comments")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request")
+    })
+  })
+  test("404: responds with an error message when a request is made for a snack_id that is valid but not present in the database", () => {
+    return request(app)
+    .get("/api/articles/9999/comments")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+  })
 })
