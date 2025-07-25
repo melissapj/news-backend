@@ -36,7 +36,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => {
-  test("topics is an object", () => {
+  test("200: checks topics is an object", () => {
     return request(app)
     .get("/api/topics")
     .expect(200)
@@ -45,7 +45,7 @@ describe("GET /api/topics", () => {
       expect(typeof body).toBe("object")
     })
   })
-  test("gets all topics", () => {
+  test("200: gets all topics", () => {
     return request(app)
     .get("/api/topics")
     .expect(200)
@@ -53,7 +53,7 @@ describe("GET /api/topics", () => {
       expect(body.topics.length).toBeGreaterThan(0)
     })
   })
-  test("each topic has the correct properties", () => {
+  test("200: each topic has the correct properties", () => {
     return request(app)
     .get("/api/topics")
     .expect(200)
@@ -68,7 +68,15 @@ describe("GET /api/topics", () => {
 })
 
 describe("GET /api/articles", () => {
-  test("each article is an object", () => {
+  test("200: gets all articles", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBeGreaterThan(0)
+    })
+  })
+  test("200: each article is an object", () => {
     return request(app)
     .get("/api/articles")
     .expect(200)
@@ -77,15 +85,7 @@ describe("GET /api/articles", () => {
       expect(typeof body).toBe("object");
     })
   })
-  test("gets all articles", () => {
-    return request(app)
-    .get("/api/articles")
-    .expect(200)
-    .then(({body}) => {
-      expect(body.articles.length).toBeGreaterThan(0)
-    })
-  })
-  test("each article has the correct properties", () => {
+  test("200: checks each article has the correct properties", () => {
     return request(app)
     .get("/api/articles")
     .expect(200)
@@ -106,7 +106,15 @@ describe("GET /api/articles", () => {
 })
 
 describe("GET /api/users", () => {
-  test("each user is an object", () => {
+  test("200: gets all users", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.users.length).toBeGreaterThan(0)
+    })
+  })
+  test("200: each user is an object", () => {
     return request(app)
     .get("/api/users")
     .expect(200)
@@ -115,15 +123,7 @@ describe("GET /api/users", () => {
       expect(typeof body).toBe("object");
     })
   })
-  test("gets all users", () => {
-    return request(app)
-    .get("/api/users")
-    .expect(200)
-    .then(({body}) => {
-      expect(body.users.length).toBeGreaterThan(0)
-    })
-  })
-  test("each user has the correct properties", () => {
+  test("200: checks each user has the correct properties", () => {
     return request(app)
     .get("/api/users")
     .expect(200)
@@ -139,7 +139,7 @@ describe("GET /api/users", () => {
 })
 
 describe("GET /api/articles/:article_id", () => {
-  test("article is an object", () => {
+  test("200: checks article is an object", () => {
     return request(app)
     .get("/api/articles/2")
     .expect(200)
@@ -148,7 +148,7 @@ describe("GET /api/articles/:article_id", () => {
       expect(typeof body).toBe("object");
     })
   })
-  test("gets and article by its id with correct properties", () => {
+  test("200: gets and article by its id with correct properties", () => {
     return request(app)
     .get("/api/articles/2")
     .expect(200)
@@ -184,7 +184,7 @@ describe("GET /api/articles/:article_id", () => {
 })
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("comments is an object", () => {
+  test("200: checks comments is an object", () => {
     return request(app)
     .get("/api/articles/5/comments")
     .expect(200)
@@ -193,7 +193,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       expect(body).toHaveProperty("comments")
     })
   })
-  test("gets all comments for an article_id", () => {
+  test("200: gets all comments for an article_id", () => {
      return request(app)
     .get("/api/articles/5/comments")
     .expect(200)
@@ -201,7 +201,7 @@ describe("GET /api/articles/:article_id/comments", () => {
        expect(body.comments.length).toBeGreaterThan(0)
     })
   })
-  test("each comment has the correct properties", () => {
+  test("200: each comment has the correct properties", () => {
     return request(app)
     .get("/api/articles/5/comments")
     .expect(200)
@@ -237,7 +237,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 })
 
 describe("POST /api/articles/:article_id/comments", () => {
-  test("checks the posted comment is an object", () => {
+  test("200: checks the posted comment is an object", () => {
     const data = {
       username: "butter_bridge",
       body: "this is a test body"
@@ -251,7 +251,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(typeof comment).toBe("object")
     })
   })
-  test("checks the posted comment has correct properties", () => {
+  test("200: checks the posted comment has correct properties", () => {
     const data = {
       username: "butter_bridge",
       body: "this is a test body"
@@ -270,7 +270,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(typeof comment.created_at).toBe("string")
     })
   })
-  test("checks the total number of comments had gone up by 1", async () => {
+  test("200: checks the total number of comments had gone up by 1", async () => {
     const data = {
       username: "butter_bridge",
       body: "this is a test body"
@@ -318,7 +318,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 })
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("200: responds with and object", () => {
+  test("200: responds with an object", () => {
   const incVote = { inc_votes: 5 };
   return request(app)
     .patch("/api/articles/1")
@@ -377,6 +377,47 @@ describe("PATCH /api/articles/:article_id", () => {
     return request(app)
     .patch("/api/articles/9999")
     .send(incVote)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Not Found"); 
+    })
+  })
+})
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: responds with an content", () => {
+  return request(app)
+    .delete("/api/comments/3")
+    .expect(204)
+    .then(({body}) => {
+      expect(body).toEqual({})
+    })
+  })
+  test("204: checks comments had decreased", async () => {
+
+    const { rows: beforeRows } = await db.query(`SELECT * FROM comments;`);
+    const beforeCount = beforeRows.length
+
+    await request(app)
+    .delete("/api/comments/3")
+    .expect(204)
+
+    const { rows: afterRows } = await db.query(`SELECT * FROM comments;`);
+    const afterCount = afterRows.length
+
+    expect(beforeCount - afterCount).toBe(1)
+  })
+  test("400: invalid comment_id type", () => {
+    return request(app)
+    .delete("/api/comments/not-a-number")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request"); 
+    })
+  })
+  test("404: article does not exist", () => {
+    return request(app)
+    .delete("/api/comments/9999")
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Not Found"); 
