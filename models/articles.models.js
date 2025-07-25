@@ -1,4 +1,5 @@
 const db = require('../db/connection')
+const { articleData } = require('../db/data/test-data')
 
 const fetchArticles = () => {
     return db.query(`
@@ -28,6 +29,33 @@ const fetchArticles = () => {
     })
 }
 
+const fetchArticlesById = (article_id) => {
+    return db.query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .then(({rows: article}) => {
+        const articleNeeded = {article}
+        if (article.length === 0) {
+            return Promise.reject({ status: 404, msg: "Not Found"})
+        }
+        return articleNeeded
+    })
+}
+
+const adjustArticleVotes = (article_id, inc_votes) => {
+  return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
+    .then(({rows}) => {
+     if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+     return db.query(`
+      UPDATE articles
+      SET votes = votes + $1
+      WHERE article_id = $2
+      RETURNING *;`, [inc_votes, article_id])
+     .then(({ rows: article }) => {
+     return {article}
+    })
+})
+}
 
 
-module.exports = fetchArticles
+module.exports = { fetchArticlesById, fetchArticles, adjustArticleVotes }

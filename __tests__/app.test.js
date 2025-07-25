@@ -217,6 +217,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       })
     })
   })
+
   test("400: responds with an error message when a request is made for an article_id of the wrong data type", () => {
     return request(app)
     .get("/api/articles/wrong-data-type/comments")
@@ -225,7 +226,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       expect(body.msg).toBe("Bad Request")
     })
   })
-  test("404: responds with an error message when a request is made for a snack_id that is valid but not present in the database", () => {
+  test("404: responds with an error message when a request is made for a article_id that is valid but not present in the database", () => {
     return request(app)
     .get("/api/articles/9999/comments")
     .expect(404)
@@ -246,7 +247,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     .send(data)
     .expect(200)
     .then(({body}) => {
-      const comment = body[0]
+      const comment = body.comment[0]
       expect(typeof comment).toBe("object")
     })
   })
@@ -260,7 +261,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     .send(data)
     .expect(200)
     .then(({body}) => {
-      const comment = body[0]
+      const comment = body.comment[0]
       expect(typeof comment.comment_id).toBe("number")
       expect(typeof comment.article_id).toBe("number")
       expect(typeof comment.body).toBe("string")
@@ -289,11 +290,96 @@ describe("POST /api/articles/:article_id/comments", () => {
      expect(AfterCount - beforeCount).toBe(1)
   })
   test("400: responds with an error message when a request is made for an article_id of the wrong data type", () => {
+    const data = {
+      username: "butter_bridge",
+      body: "this is a test body"
+    }
     return request(app)
-    .get("/api/articles/wrong-data-type/comments")
+    .post("/api/articles/wrong-data-type/comments")
+    .send(data)
     .expect(400)
     .then(({body}) => {
       expect(body.msg).toBe("Bad Request")
+    })
+  })
+  test("404: responds with an error message when a request is made for a article_id that is valid but not present in the database", () => {
+    const data = {
+      username: "butter_bridge",
+      body: "this is a test body"
+    }
+    return request(app)
+    .post("/api/articles/9999/comments")
+    .send(data)
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+  })
+})
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: responds with and object", () => {
+  const incVote = { inc_votes: 5 };
+  return request(app)
+    .patch("/api/articles/1")
+    .send(incVote)
+    .expect(200)
+    .then(({body}) => {
+      const articleUpdated = body.article[0]
+      expect(typeof body).toBe("object");
+      expect(articleUpdated.article_id).toBe(1);
+      expect(typeof articleUpdated.article_id).toBe("number"); 
+    });
+  });
+  test("200: adjusts votes correctly", () => {
+    const incVote = { inc_votes: -1000 };
+    return request(app)
+    .patch("/api/articles/1")
+    .send(incVote)
+    .expect(200)
+    .then(({ body }) => {
+      const articleUpdated = body.article[0]
+      expect(typeof articleUpdated.votes).toBe("number"); 
+    })
+  })
+  test("400: invalid inc_votes value type", () => {
+    const incVote = { inc_votes: "coffee" };
+    return request(app)
+    .patch("/api/articles/1")
+    .send(incVote)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request"); 
+    })
+  })
+  test("400: missing inc_votes key in request body", () => {
+    const incVote = {};
+    return request(app)
+    .patch("/api/articles/1")
+    .send(incVote)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request"); 
+    })
+  })
+  test("400: invalid article_id type", () => {
+    const incVote = { inc_votes: "5" }
+    return request(app)
+    .patch("/api/articles/not-a-number")
+    .send(incVote)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request"); 
+    })
+  })
+  test("404: article does not exist", () => {
+    const incVote = { inc_votes: 5 }
+    return request(app)
+    .patch("/api/articles/9999")
+    .send(incVote)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Not Found"); 
     })
   })
 })
