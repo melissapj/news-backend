@@ -1,4 +1,4 @@
-const db = require('../db/connection')
+const db = require('../connection')
 const { articleData } = require('../db/data/test-data')
 
 const fetchArticles = (sort_by = "created_at", order = "desc", topic) => {

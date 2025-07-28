@@ -1,4 +1,4 @@
-const db = require('../db/connection')
+const db = require('../connection')
 
 const fetchUsers = () => {
     return db.query(`SELECT * FROM users`)

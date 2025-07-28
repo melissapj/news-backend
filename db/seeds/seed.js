@@ -1,33 +1,33 @@
-const db = require("../connection")
+const db = require("../../connection")
 const format = require('pg-format');
 const { convertTimestampToDate } = require('./utils'); 
 const { createLookupRef } = require('./utils')
 
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
-  return db.query(`DROP TABLE IF EXISTS comments`)
-  .then (() => {
-    return db.query(`DROP TABLE IF EXISTS articles`)
-  })
-  .then (() => {
-    return db.query(`DROP TABLE IF EXISTS users`)
-  })
-  .then (() => {
-    return db.query(`DROP TABLE IF EXISTS topics`)
-  })
-  .then(() => {
-    return createTopics()
-
-  })
-  .then(() => {
-    return createUsers()
-  })
-  .then(() => {
-    return createArticles()
-  })
-  .then(() => {
-    return createComments()
-  })
+    return db
+    .query(`DROP TABLE IF EXISTS comments`)
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS articles`);
+    })
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS users`);
+    })
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS topics`);
+    })
+    .then(() => {
+      return createTopics();
+    })
+    .then(() => {
+      return createUsers();
+    })
+    .then(() => {
+      return createArticles();
+    })
+    .then(() => {
+      return createComments();
+    })
   .then(() => {
     const formattedTopics = topicData.map((topic) => {
       return [topic.description, topic.slug, topic.img_url]
@@ -80,6 +80,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     );
     return db.query(queryString)
   })
+  
 .catch((err) => {
   console.error('Error seeding database:', err);
 });
