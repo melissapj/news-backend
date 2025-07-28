@@ -4,6 +4,7 @@ const testData = require('../db/data/test-data/index')
 const request = require('supertest')
 const app = require('../app')
 const endpointsJson = require("../endpoints.json");
+require("jest-sorted");
 
 beforeEach(() => {
   return seed(testData)
@@ -421,6 +422,54 @@ describe("DELETE /api/comments/:comment_id", () => {
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Not Found"); 
+    })
+  })
+})
+
+describe("GET /api/articles (sorting queries)", () => {
+  test("200: default sort_by=created_at, order=desc", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+    test("200: sort_by=title, order=asc", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("title", { descending: false });
+      });
+  });
+
+  test("200: sort_by=votes, order=desc", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=desc")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toBeSortedBy("votes", { descending: true });
+      });
+  });
+  test("400: invalid sort_by column", () => {
+  return request(app)
+    .get("/api/articles?sort_by=banana")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Invalid sort_by query");
+    });
+  });
+  test("400: invalid order value", () => {
+    return request(app)
+    .get("/api/articles?sort_by=votes&order=up")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Invalid order query");
     })
   })
 })

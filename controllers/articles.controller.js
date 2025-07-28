@@ -1,7 +1,8 @@
 const { fetchArticles, fetchArticlesById, adjustArticleVotes } = require('../models/articles.models')
 
 const getArticles = (req, res, next) => {
-    fetchArticles()
+    const { sort_by, order } = req.query;
+    fetchArticles(sort_by, order)
     .then((articles) => {
         res.status(200);
         res.send( {articles} )
