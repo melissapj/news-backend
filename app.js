@@ -24,7 +24,6 @@ app.patch('/api/articles/:article_id', patchArticleById)
 
 app.delete('/api/comments/:comment_id', deleteCommentById)
 
-app.get('/api/articles', getArticles)
 
 app.use((req, res) => {
     res.status(404).send({msg: "Path Not Found"})

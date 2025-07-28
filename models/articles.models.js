@@ -1,7 +1,7 @@
 const db = require('../db/connection')
 const { articleData } = require('../db/data/test-data')
 
-const fetchArticles = (sort_by = "created_at", order = "desc") => {
+const fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   const validSortBy = [
     "article_id", "author", "title", "topic",
     "created_at", "votes", "article_img_url", "comment_count"
@@ -15,32 +15,47 @@ const fetchArticles = (sort_by = "created_at", order = "desc") => {
   }
 
 
-  return db.query(`
-  SELECT
-  articles.article_id,
-  articles.author,
-  articles.title,
-  articles.topic,
-  articles.created_at,
-  articles.votes,
-  articles.article_img_url,
-  COUNT (comments.comment_id) AS comment_count
-  FROM articles
-  FULL JOIN comments
-  ON articles.article_id = comments.article_id
-  GROUP BY
-  articles.article_id,
-  articles.author,
-  articles.title,
-  articles.topic,
-  articles.created_at,
-  articles.votes,
-  articles.article_img_url
-  ORDER BY ${sort_by} ${order.toUpperCase()};`)
-  .then(({rows: articles}) => {
-      return articles
-  })
-}
+  let queryStr = `
+    SELECT
+      articles.article_id,
+      articles.author,
+      articles.title,
+      articles.topic,
+      articles.created_at,
+      articles.votes,
+      articles.article_img_url,
+      COUNT(comments.comment_id) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON articles.article_id = comments.article_id
+  `;
+  
+  const queryValues = [];
+  
+  if (topic) {
+    queryValues.push(topic);
+    queryStr += ` WHERE articles.topic = $1`;
+  }
+  
+  queryStr += `
+    GROUP BY
+      articles.article_id,
+      articles.author,
+      articles.title,
+      articles.topic,
+      articles.created_at,
+      articles.votes,
+      articles.article_img_url
+    ORDER BY ${sort_by} ${order.toUpperCase()};
+  `;
+
+   return db.query(queryStr, queryValues)
+    .then(({ rows: articles }) => {
+      if (topic && articles.length === 0) {
+        return Promise.reject({ status: 404, msg: "Topic not found" });
+      }
+      return articles;
+    });
+};
 
 const fetchArticlesById = (article_id) => {
   return db.query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])

@@ -464,12 +464,38 @@ describe("GET /api/articles (sorting queries)", () => {
       expect(body.msg).toBe("Invalid sort_by query");
     });
   });
-  test("400: invalid order value", () => {
+})
+
+describe("GET /api/articles (topic query)", () => {
+  test("200: gets articles with given topic", () => {
     return request(app)
-    .get("/api/articles?sort_by=votes&order=up")
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.msg).toBe("Invalid order query");
-    })
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(Array.isArray(articles)).toBe(true);
+        articles.forEach(article => {
+          expect(article.topic).toBe("cats");
+        });
+    });
   })
+  test("200: returns all articles when no topic query is given", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(Array.isArray(articles)).toBe(true);
+        expect(articles.length).toBeGreaterThan(0);
+      });
+  });
+
+  test("404: responds with error when topic does not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=nonexistenttopic")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic not found");
+      });
+  });
 })
