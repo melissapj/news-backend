@@ -499,3 +499,38 @@ describe("GET /api/articles (topic query)", () => {
       });
   });
 })
+
+describe("GET /api/articles/:article_id and check comment count", () => {
+  test("200: gets articles with given topic", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toHaveProperty('article');
+        expect(typeof body).toBe("object");
+        const article = body.article;
+        expect(Array.isArray(article)).toBe(true);
+        expect(article.length).toBeGreaterThan(0);
+        article.forEach(article => {
+          expect(article).toHaveProperty("comment_count")
+          expect(typeof article.comment_count).toBe("string")
+        })
+    });
+  })
+  test("400: responds with an error message whe na request is made for an article_id of the wrong data type", () => {
+    return request(app)
+    .get("/api/articles/wrong-data-type")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request")
+    })
+  })
+  test("404: responds with an error message when a request is made for a snack_id that is valid but not present in the database", () => {
+    return request(app)
+    .get("/api/articles/9999")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not Found")
+    })
+  })
+})
