@@ -6,6 +6,9 @@ const {getCommentsByArticleId, postCommentByArticleId, deleteCommentById} = requ
 
 const app = express()
 
+const path = require('path');
+app.use('/api', express.static(path.join(__dirname, 'public')));
+
 app.use(express.json())
 
 app.get('/api/topics', getTopics)

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Northcoders News Backend API</title>
+</head>
+<body>
+    <header>
+    <h1>Northcoders News Backend API Documentation</h1>
+    <p>A RESTful API for articles, topics, users, and comments.</p>
+    </header>
+
+<nav>
+    <h2>Navigation</h2>
+    <ul>
+      <li><a href="#get-topics">GET /api/topics</a></li>
+      <li><a href="#get-articles">GET /api/articles</a></li>
+      <li><a href="#get-users">GET /api/users</a></li>
+      <li><a href="#get-article-by-id">GET /api/articles/:article_id</a></li>
+      <li><a href="#get-comments-by-article-id">GET /api/articles/:article_id/comments</a></li>
+      <li><a href="#post-comment">POST /api/articles/:article_id/comments</a></li>
+      <li><a href="#patch-article">PATCH /api/articles/:article_id</a></li>
+      <li><a href="#delete-comment">DELETE /api/comments/:comment_id</a></li>
+    </ul>
+  </nav>
+
+<section id="get-topics">
+      <h2>GET /api/topics</h2>
+      <p>Fetches all the topics and returns an object with all.</p>
+      <p><strong>Example Response:</strong></p>
+      <pre>
+{
+  topics: [
+    { slug: "coding", description: "Code is love, code is life" },
+    { slug: "football", description: "Footie!" },
+    ...
+  ]
+}
+      </pre>
+</section>
+
+<section id="get-articles">
+      <h2>GET /api/articles</h2>
+      <p>Fetches all the articles and returns an object with all.</p>
+      <p><strong>Example Response:</strong></p>
+      <pre>
+{
+  articles: [
+    {
+    title: "Living in the shadow of a great man",
+    topic: "mitch",
+    author: "butter_bridge",
+    body: "I find this existence challenging",
+    created_at: 1594329060000,
+    votes: 100,
+    article_img_url:
+      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    },
+    {
+    title: "Sony Vaio; or, The Laptop",
+    topic: "mitch",
+    author: "icellusedkars",
+    body: "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+    created_at: 1602828180000,
+    votes: 0,
+    article_img_url:
+      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    },
+    ...
+  ]
+}
+      </pre>
+</section>
+
+<section id="get-users">
+      <h2>GET /api/users</h2>
+      <p>Fetches all the users and returns an object with all.</p>
+      <p><strong>Example Response:</strong></p>
+      <pre>
+{
+  users: [
+    {
+    username: "butter_bridge",
+    name: "jonny",
+    avatar_url:
+      "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+    },
+    {
+    username: "icellusedkars",
+    name: "sam",
+    avatar_url: "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+    },
+    ...
+  ]
+}
+      </pre>
+</section>
+
+<section id="get-article-by-id">
+      <h2>GET /api/article:article_id</h2>
+      <p>Fetches an article by the given article_id and returns an object containing the full article</p>
+      <p><strong>Example Request:</strong></p>
+      <pre>GET /api/articles/1</pre>
+      <p><strong>Example Response:</strong></p>
+  <pre>
+{
+  article: [
+    {
+    article_id: 1,
+    title: "Running a Node App",
+    topic: "coding",
+    author: "jessjelly",
+    body: "This is part two of a series on how to get up and running with Node.js...",
+    created_at: "2020-11-07T00:00:00.000Z",
+    votes: 0,
+    comment_count: 8
+    }
+  ]
+}
+      </pre>
+</section>
+
+<section id="get-comments-by-article-id">
+      <h2>GET /api/article:article_id/comments</h2>
+      <p>Fetches an article by the given article_id and returns an object containing all the comments with that article_id</p>
+      <p><strong>Example Request:</strong></p>
+      <pre>GET /api/articles/3/comments</pre>
+      <p><strong>Example Response:</strong></p>
+  <pre>
+{
+  comments: [
+    {
+    comment_id: 145,
+    article_id": 3,
+    body: "Odit aut error. Occaecati et qui. Quam nam aut dolorem.",
+    votes: 10,
+    author: "jessjelly",
+    created_at: "2020-10-03T14:18:00.000Z"
+    }, 
+    {
+    comment_id: 3,
+    article_id: 3,
+    body: "Qui sunt sit voluptas repellendus sed. Voluptatem et repellat fugiat. Rerum doloribus eveniet quidem vero aut sint officiis. Dolor facere et et architecto vero qui et perferendis dolorem. Magni quis ratione adipisci error assumenda ut. Id rerum eos facere sit nihil ipsam officia aspernatur odio.",
+    votes: 3,
+    author: "grumpy19",
+    created_at: "2020-09-23T00:18:00.000Z"
+    },
+    ...
+  ]
+}
+      </pre>
+</section>
+
+<section id="post-comment">
+      <h2>POST /api/article:article_id/comments</h2>
+      <p>Posts a comment for a specified artile_id and returns with the new comment. Votes and created_at are defaulted to 0 and current timestamp if not given.</p>
+      <p><strong>Example Request:</strong></p>
+      <pre>POST /api/articles/3/comments  { username = "butter_bridge", body = "This is a test body" }
+      </pre>
+      <p><strong>Example Response:</strong></p>
+  <pre>
+{
+  comment: [
+    {
+    article_title:"Eight pug gifs that remind me of mitch"
+    username: "butter_bridge",
+    body: "This is a test body",
+    votes: 16,
+    author: "butter_bridge",
+    created_at: "2025-07-29T15:30:00.000Z"
+    }, 
+  ]
+}
+      </pre>
+</section>
+
+<section id="patch-article">
+      <h2>PATCH /api/article:article_id</h2>
+      <p>Amends the votes of an article with the given article_id and return an object of the updated article. All the other properties remain the same.</p>
+      <p><strong>Example Request:</strong></p>
+      <pre>PATCH /api/article/4 { inc_votes: 5 }
+      </pre>
+      <p><strong>Example Response:</strong></p>
+  <pre>
+{
+  article: [
+    {
+    title: "Student SUES Mitch!",
+    topic: "mitch",
+    author: "rogersop",
+    body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+    created_at: 1588731240000,
+    votes: 5,
+    article_img_url:
+      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    }, 
+  ]
+}
+      </pre>
+</section>
+
+<section id="delete-comment">
+      <h2>DELETE /api/comments/:comment_id</h2>
+      <p>Deleted the full comment and all its properties of the given comment_id and responds with an empty object.</p>
+      <p><strong>Example Request:</strong></p>
+      <pre>DELETE /api/comments/7
+      </pre>
+      <p><strong>Example Response:</strong></p>
+  <pre>
+{ }
+      </pre>
+</section>
+
+
+
+</html>
