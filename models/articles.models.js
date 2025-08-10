@@ -47,10 +47,16 @@ const fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
       articles.article_img_url
     ORDER BY ${sort_by} ${order.toUpperCase()};
   `;
-   return db.query(queryStr, queryValues)
+    return db.query(queryStr, queryValues)
     .then(({ rows: articles }) => {
       if (topic && articles.length === 0) {
-        return Promise.reject({ status: 404, msg: "Topic not found" });
+        return db.query(`SELECT * FROM topics WHERE slug = $1;`, [topic])
+          .then(({ rows: topics }) => {
+            if (topics.length === 0) {
+              return Promise.reject({ status: 404, msg: "Topic not found" });
+            }
+            return [];
+          });
       }
       return articles;
     });
@@ -67,18 +73,17 @@ const fetchArticlesById = (article_id) => {
       articles.created_at,
       articles.votes,
       articles.article_img_url,
-      COUNT(comments.comment_id) AS comment_count
+      COUNT(comments.comment_id)::INT AS comment_count
     FROM articles
     LEFT JOIN comments
     ON articles.article_id = comments.article_id
     WHERE articles.article_id = $1
     GROUP BY articles.article_id;`, [article_id])
-  .then(({rows: article}) => {
-      const articleNeeded = {article}
-      if (article.length === 0) {
-        return Promise.reject({ status: 404, msg: "Not Found"})
-      }
-      return articleNeeded
+  .then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not Found" });
+    }
+    return { article: rows[0] }; 
   })
 }
 
@@ -93,8 +98,8 @@ const adjustArticleVotes = (article_id, inc_votes) => {
     SET votes = votes + $1
     WHERE article_id = $2
     RETURNING *;`, [inc_votes, article_id])
-    .then(({ rows: article }) => {
-    return {article}
+    .then(({ rows }) => {
+      return { article: rows[0] }
     })
   })
 }

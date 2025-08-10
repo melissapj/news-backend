@@ -13,17 +13,20 @@ const getCommentsByArticleId = (req, res, next) => {
 }
 
 const postCommentByArticleId = (req, res, next) => {
-    const { username, body } = req.body
-    const { article_id } = req.params
-    if (isNaN(Number(article_id))) {
-        res.status(400)
-        res.send({ status: 400, msg: "Bad Request" });
-        return;
-    }
-    addCommentByArticleId(article_id, username, body)
+  const { username, body } = req.body;
+  const { article_id } = req.params;
+
+  if (isNaN(Number(article_id))) {
+    return res.status(400).send({ status: 400, msg: "Bad Request" });
+  }
+
+  if (!username || !body) {
+    return res.status(400).send({ status: 400, msg: "Bad Request" });
+  }
+
+  addCommentByArticleId(article_id, username, body)
     .then((comment) => {
-        res.status(200);
-        res.send(comment)
+      res.status(201).send(comment);
     })
     .catch((err) => {
         next(err)
