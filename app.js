@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const cors = require('cors');
 
-app.use(cors());
+const app = express();
 
 const getTopics = require("./controllers/topics.controllers");
 const {
@@ -17,8 +17,14 @@ const {
   deleteCommentById,
 } = require("./controllers/comments.controller");
 
-const app = express();
+
+app.use(cors());
+
 app.disable("strict routing");
+
+app.get("/api/cors-test", (req, res) => {
+  res.json({ message: "CORS should be working" });
+});
 
 app.use("/api/static", express.static(path.join(__dirname, "public")));
 
