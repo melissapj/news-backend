@@ -12,7 +12,7 @@ Built with Node.js, Express, and PostgreSQL, this RESTful API supports a news pl
 
 
 # Live Demo:
-https://northcoders-news-backend.onrender.com
+https://northcoders-news-backend-1.onrender.com/api
 
 ## Prerequisites
 - Node.js v16 or higher
