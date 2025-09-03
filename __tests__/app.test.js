@@ -165,7 +165,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(typeof articleRecieved.article_img_url).toBe("string");
       });
   });
-  test("400: responds with an error message whe na request is made for an article_id of the wrong data type", () => {
+  test("400: responds with an error message when a request is made for an article_id of the wrong data type", () => {
     return request(app)
       .get("/api/articles/wrong-data-type")
       .expect(400)
