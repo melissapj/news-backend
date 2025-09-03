@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const cors = require('cors');
-
+const endpointsJson = require("./endpoints.json");
 const app = express();
 
 const getTopics = require("./controllers/topics.controllers");
@@ -31,41 +31,7 @@ app.use("/api/static", express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 app.get("/api", (req, res) => {
-  res.status(200).send({
-    endpoints: {
-      "GET /api": {
-        description:
-          "serves up a json representation of all the available endpoints of the api",
-      },
-      "GET /api/articles": {
-        description: "serves an array of all articles",
-        exampleResponse: {
-          articles: [
-            {
-              author: "weegembump",
-              comment_count: 6,
-              created_at: "2018-05-30T15:59:13.341Z",
-              title: "Seafood substitutions are increasing",
-              topic: "cooking",
-              votes: 0,
-            },
-          ],
-        },
-      },
-      "GET /api/topics": {
-        description: "serves an array of all topics",
-        exampleResponse: {
-          topics: [
-            {
-              description: "Footie!",
-              slug: "football",
-            },
-          ],
-        },
-        queries: [],
-      },
-    },
-  });
+  res.status(200).send({ endpoints: endpointsJson });
 });
 
 app.get("/api/topics", getTopics);
